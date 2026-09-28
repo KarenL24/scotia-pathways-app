@@ -1,9 +1,10 @@
 # Scotiabank Pathways
 
 A mobile-first personal-finance dashboard concept for Scotiabank — built
-with Next.js (App Router), React, and the OpenAI API. It shows a user's
+with Next.js (App Router), React, the OpenAI API, and ElevenLabs. It shows a user's
 monthly money split, progress toward a savings goal, how they compare to
-peers, and a live, AI-generated plan for any goal they type in.
+peers, and a live, AI-generated plan for any goal they type in — and can
+read the dashboard aloud.
 
 ## Screenshots
 
@@ -44,6 +45,20 @@ it — live, not mocked.
 - Once a plan comes back, the whole dashboard — goal card, next best
   action, recommendations, projection chart — re-renders around it.
 
+## ElevenLabs integration
+
+The round speaker button in the bottom-right corner reads a short summary
+of the dashboard aloud (goal progress, ETA, peer percentile, next best
+action) using ElevenLabs text-to-speech. Tap the pencil above it to type
+your own text instead.
+
+- **Server route**: `src/app/api/speak/route.ts` calls ElevenLabs'
+  [text-to-speech API](https://elevenlabs.io/docs/api-reference/text-to-speech)
+  with the `eleven_turbo_v2_5` model and streams the MP3 back, so the API
+  key never reaches the browser.
+- **Voice**: "Rachel" by default (override with `ELEVENLABS_VOICE_ID`).
+- **Cost guard**: requests are capped at 2,000 characters.
+
 ## Other features
 
 - **Money meter** — a donut gauge of the monthly split across fixed
@@ -65,6 +80,7 @@ it — live, not mocked.
 - React 19 + TypeScript
 - Tailwind CSS 4
 - [OpenAI API](https://platform.openai.com) (`openai` SDK, Responses API + web search)
+- [ElevenLabs](https://elevenlabs.io) text-to-speech
 
 ## Getting started
 
@@ -75,7 +91,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Enable the AI goal planner
+### Enable the AI features
 
 ```bash
 cp .env.example .env.local
@@ -86,17 +102,21 @@ Fill in `.env.local`:
 ```
 OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-4.1   # optional, this is the default
+ELEVENLABS_API_KEY=...
+ELEVENLABS_VOICE_ID=   # optional
 ```
 
-Without a key, the rest of the dashboard still works — typing a custom
-goal and hitting "Go" will just show an error instead of a plan.
+Restart `npm run dev` after editing it. Without keys, the rest of the
+dashboard still works — the goal planner and read-aloud button just show
+an error instead.
 
 ## Project structure
 
 ```
-src/app/                    Next.js routes (page, layout, /api/goal-plan)
+src/app/                    Next.js routes (page, layout, /api/goal-plan, /api/speak)
 src/app/api/goal-plan/      Server route that calls OpenAI and returns a GoalPlan
-src/components/             The dashboard UI (single PathwaysPhone component)
+src/app/api/speak/          Server route that calls ElevenLabs and streams back audio
+src/components/             The dashboard UI (PathwaysPhone + SpeakButton)
 src/lib/                    Mock data, palette, types, and the goal-plan JSON schema
 public/                     Static assets
 ```
@@ -105,4 +125,4 @@ public/                     Static assets
 
 This is a prototype / demo — most dashboard data is mocked
 (`src/lib/data.ts`), and there's no backend or persistence beyond the
-live OpenAI call for custom goals.
+live OpenAI and ElevenLabs calls.

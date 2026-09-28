@@ -5,6 +5,7 @@ import { GOALS, SERIES, COHORTS, BINS, TREND, TREND_YOU, money, compact, ord, gr
 import { C } from "@/lib/palette";
 import type { ActiveGoal } from "@/lib/types";
 import type { GoalPlan } from "@/lib/goalPlan";
+import { SpeakButton } from "@/components/SpeakButton";
 
 const INCOME = 4850;
 
@@ -261,6 +262,18 @@ export default function PathwaysPhone() {
   const nbaAmount = Math.round((contrib * 0.42) / 5) * 5;
   const nbaTitle = goal.nba.title.replace("$510", money(nbaAmount));
   const nbaConfirm = goal.nba.confirm.replace("$510", money(nbaAmount));
+
+  // Short, spoken-friendly recap of the dashboard for the read-aloud button.
+  const spokenDelta = deltaMonths === 0 ? "right on your target date" : Math.abs(deltaMonths) + (Math.abs(deltaMonths) === 1 ? " month " : " months ") + (deltaMonths > 0 ? "ahead of your target" : "behind your target");
+  const summary = [
+    `You're working toward: ${goal.label}.`,
+    goal.kind === "debt"
+      ? `You've paid down ${money(goal.saved)} of ${money(goal.target)}, about ${goalPct}.`
+      : `You've saved ${money(goal.saved)} of ${money(goal.target)}, about ${goalPct}.`,
+    `Putting ${money(contrib)} a month toward it, you'll get there around ${etaLabel}, ${spokenDelta}.`,
+    `Compared to peers in your group, you're in the ${ord(co.pct)} percentile.`,
+    nbaState === "done" ? nbaConfirm : `Suggested next step: ${nbaTitle}.`
+  ].join(" ");
 
   return (
     <div style={{ width: "100%", maxWidth: 402, borderRadius: 40, background: C.neutral200, boxShadow: "0 12px 32px rgba(38,38,43,.18)", overflow: "hidden", fontFamily: "system-ui, sans-serif", color: C.text }}>
@@ -906,6 +919,8 @@ export default function PathwaysPhone() {
           <path d="M12 5.2v-2M12 3.2c1.1-1.4 2.5-1.8 3.6-1.6-.2 1.2-1.1 2.3-2.3 2.7-.4-.4-.8-.8-1.3-1.1z" stroke="#fff" strokeWidth={1.4} strokeLinecap="round" strokeLinejoin="round" fill="none" />
         </svg>
       </button>
+
+      <SpeakButton text={summary} />
     </div>
   );
 }
