@@ -126,3 +126,7 @@ public/                     Static assets
 This is a prototype / demo — most dashboard data is mocked
 (`src/lib/data.ts`), and there's no backend or persistence beyond the
 live OpenAI and ElevenLabs calls.
+
+## Author
+
+Built by [Karen Lin](https://github.com/KarenL24) for SHacks 2026.
