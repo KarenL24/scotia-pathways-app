@@ -1,3 +1,4 @@
+3rd @ Scotiabank SHACKS '26 (Project was uploaded to github after event)
 # Scotiabank Pathways
 
 A mobile-first personal-finance dashboard concept for Scotiabank — built
