@@ -60,6 +60,17 @@ your own text instead.
 - **Voice**: "Rachel" by default (override with `ELEVENLABS_VOICE_ID`).
 - **Cost guard**: requests are capped at 2,000 characters.
 
+## MCP server
+
+The dashboard's numbers are also exposed as read-only
+[MCP](https://modelcontextprotocol.io) tools at `/api/mcp` (Streamable
+HTTP), so an AI assistant can query them: `list_goals`,
+`get_dashboard_summary`, `project_savings`, `get_peer_comparison`, and
+`get_recommendations`. With `npm run dev` running, point any MCP client at
+`http://localhost:3000/api/mcp` (a `.mcp.json` is included). The tools run
+on the mock data and the endpoint has no auth, so don't expose it publicly
+as-is.
+
 ## Other features
 
 - **Money meter** — a donut gauge of the monthly split across fixed
@@ -82,6 +93,7 @@ your own text instead.
 - Tailwind CSS 4
 - [OpenAI API](https://platform.openai.com) (`openai` SDK, Responses API + web search)
 - [ElevenLabs](https://elevenlabs.io) text-to-speech
+- [Model Context Protocol](https://modelcontextprotocol.io) TypeScript SDK
 
 ## Getting started
 
@@ -114,7 +126,7 @@ an error instead.
 ## Project structure
 
 ```
-src/app/                    Next.js routes (page, layout, /api/goal-plan, /api/speak)
+src/app/                    Next.js routes (page, layout, /api/goal-plan, /api/speak, /api/mcp)
 src/app/api/goal-plan/      Server route that calls OpenAI and returns a GoalPlan
 src/app/api/speak/          Server route that calls ElevenLabs and streams back audio
 src/components/             The dashboard UI (PathwaysPhone + SpeakButton)
